@@ -1,127 +1,113 @@
-<div class="container">
-  <!-- Floating balloons -->
-  <div class="balloon balloon-1">&#127880;</div>
-  <div class="balloon balloon-2">&#127880;</div>
-  <div class="balloon balloon-3">&#127880;</div>
-  <div class="balloon balloon-4">&#127880;</div>
-  <div class="balloon balloon-5">&#127880;</div>
-
-  <!-- Confetti -->
-  <div class="confetti confetti-1">&#127881;</div>
-  <div class="confetti confetti-2">&#127881;</div>
-  <div class="confetti confetti-3">&#127881;</div>
-
-  <div class="card">
-    <!-- Header -->
-    <div class="header">
-      <div class="age-badge">8</div>
-      <h1 class="title">Phileas</h1>
-      <p class="subtitle">Anniversaire !</p>
-    </div>
-
-    <!-- Party Info -->
-    <div class="info-section">
-      <div class="info-item">
-        <span class="info-icon">&#128197;</span>
-        <div class="info-text">
-          <strong>23 Mars</strong>
-          <span>Notez la date !</span>
-        </div>
+<div class="page">
+  <div class="hero">
+    <div class="hero-content">
+      <div class="badge">
+        <span class="age">8</span>
+        <span class="ans">ans</span>
       </div>
-      <div class="info-item">
-        <span class="info-icon">&#127874;</span>
-        <div class="info-text">
-          <strong>On fait la fete !</strong>
-          <span>Jeux & Surprises</span>
+      <h1>PHILEAS</h1>
+      <div class="tagline">fête son anniversaire</div>
+      <div class="date-block">
+        <div class="date-icon">&#128197;</div>
+        <div class="date-info">
+          <span class="day">23</span>
+          <span class="month">MARS</span>
         </div>
       </div>
     </div>
+  </div>
 
+  <div class="main-content">
     <!-- Error Message -->
     @if (error()) {
-      <div class="error-message">
-        &#9888; {{ error() }}
+      <div class="error-box">
+        <span>&#9888;</span> {{ error() }}
       </div>
     }
 
     <!-- RSVP Form -->
     @if (showForm()) {
-      <div class="rsvp-section">
-        <h2>Tu peux venir ?</h2>
-        <div class="form-group">
-          <input
-            type="text"
-            placeholder="Ton prenom"
-            [ngModel]="guestName()"
-            (ngModelChange)="guestName.set($event)"
-            class="name-input"
-            [disabled]="loading()"
-          />
-        </div>
-        <div class="button-group">
+      <div class="rsvp-card">
+        <h2>Tu viens ?</h2>
+        <input
+          type="text"
+          placeholder="Entre ton prénom"
+          [ngModel]="guestName()"
+          (ngModelChange)="guestName.set($event)"
+          class="input-field"
+          [disabled]="loading()"
+        />
+        <div class="btn-row">
           <button
-            class="btn btn-yes"
+            class="btn btn-confirm"
             (click)="submitRSVP(true)"
             [disabled]="!guestName().trim() || loading()"
           >
             @if (loading()) {
-              Envoi...
+              <span class="loader"></span>
             } @else {
-              Oui, je viens ! &#127881;
+              OUI, JE SERAI LÀ !
             }
           </button>
           <button
-            class="btn btn-no"
+            class="btn btn-decline"
             (click)="submitRSVP(false)"
             [disabled]="!guestName().trim() || loading()"
           >
             @if (loading()) {
-              Envoi...
+              <span class="loader"></span>
             } @else {
-              Non, je ne peux pas &#128546;
+              NON, DÉSOLÉ
             }
           </button>
         </div>
       </div>
     } @else {
-      <div class="thank-you">
+      <div class="thank-you-card">
         @if (submitted()) {
-          <h2>&#127881; Merci ! &#127881;</h2>
-          <p>Ta reponse a ete enregistree !</p>
-          <button class="btn btn-another" (click)="resetForm()">
-            Ajouter un autre ami
+          <div class="check-icon">&#10003;</div>
+          <h2>Merci !</h2>
+          <p>Ta réponse a été enregistrée</p>
+          <button class="btn btn-secondary" (click)="resetForm()">
+            Ajouter un autre invité
           </button>
         }
       </div>
     }
 
-    <!-- Guest List - Attending -->
-    @if (attendingGuests.length > 0) {
-      <div class="guest-list attending">
-        <h3>&#127881; Amis qui viennent : {{ attendingGuests.length }}</h3>
-        <div class="guests">
-          @for (guest of attendingGuests; track guest.id) {
-            <span class="guest-tag yes">{{ guest.name }}</span>
-          }
+    <!-- Guest Lists -->
+    <div class="guests-section">
+      @if (attendingGuests.length > 0) {
+        <div class="guest-card coming">
+          <div class="guest-header">
+            <span class="guest-count">{{ attendingGuests.length }}</span>
+            <span class="guest-label">{{ attendingGuests.length === 1 ? 'invité confirmé' : 'invités confirmés' }}</span>
+          </div>
+          <div class="guest-list">
+            @for (guest of attendingGuests; track guest.id) {
+              <span class="guest-chip">{{ guest.name }}</span>
+            }
+          </div>
         </div>
-      </div>
-    }
+      }
 
-    <!-- Guest List - Not Attending -->
-    @if (notAttendingGuests.length > 0) {
-      <div class="guest-list not-attending">
-        <h3>&#128546; Ne peuvent pas venir : {{ notAttendingGuests.length }}</h3>
-        <div class="guests">
-          @for (guest of notAttendingGuests; track guest.id) {
-            <span class="guest-tag no">{{ guest.name }}</span>
-          }
+      @if (notAttendingGuests.length > 0) {
+        <div class="guest-card not-coming">
+          <div class="guest-header">
+            <span class="guest-count">{{ notAttendingGuests.length }}</span>
+            <span class="guest-label">{{ notAttendingGuests.length === 1 ? 'ne peut pas venir' : 'ne peuvent pas venir' }}</span>
+          </div>
+          <div class="guest-list">
+            @for (guest of notAttendingGuests; track guest.id) {
+              <span class="guest-chip">{{ guest.name }}</span>
+            }
+          </div>
         </div>
-      </div>
-    }
+      }
+    </div>
   </div>
 
-  <!-- Footer -->
-  <div class="footer">
-    <p>A bientot ! &#127880;&#127874;&#127881;</p>
-  </div>
+  <footer>
+    <p>On t'attend avec impatience !</p>
+  </footer>
 </div>
