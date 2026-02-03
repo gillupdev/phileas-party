@@ -82,7 +82,7 @@ app.delete('/api/guests/:id', (req, res) => {
 });
 
 // Serve Angular app for all other routes (SPA support)
-app.get('*', (req, res) => {
+app.get('/{*path}', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'browser', 'index.html'));
 });
 
