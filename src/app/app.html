@@ -1,0 +1,127 @@
+<div class="container">
+  <!-- Floating balloons -->
+  <div class="balloon balloon-1">&#127880;</div>
+  <div class="balloon balloon-2">&#127880;</div>
+  <div class="balloon balloon-3">&#127880;</div>
+  <div class="balloon balloon-4">&#127880;</div>
+  <div class="balloon balloon-5">&#127880;</div>
+
+  <!-- Confetti -->
+  <div class="confetti confetti-1">&#127881;</div>
+  <div class="confetti confetti-2">&#127881;</div>
+  <div class="confetti confetti-3">&#127881;</div>
+
+  <div class="card">
+    <!-- Header -->
+    <div class="header">
+      <div class="age-badge">8</div>
+      <h1 class="title">Phileas</h1>
+      <p class="subtitle">Birthday Party!</p>
+    </div>
+
+    <!-- Party Info -->
+    <div class="info-section">
+      <div class="info-item">
+        <span class="info-icon">&#128197;</span>
+        <div class="info-text">
+          <strong>March 23rd</strong>
+          <span>Save the date!</span>
+        </div>
+      </div>
+      <div class="info-item">
+        <span class="info-icon">&#127874;</span>
+        <div class="info-text">
+          <strong>Let's celebrate!</strong>
+          <span>Fun & Games</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Error Message -->
+    @if (error()) {
+      <div class="error-message">
+        &#9888; {{ error() }}
+      </div>
+    }
+
+    <!-- RSVP Form -->
+    @if (showForm()) {
+      <div class="rsvp-section">
+        <h2>Can you come?</h2>
+        <div class="form-group">
+          <input
+            type="text"
+            placeholder="Your name"
+            [ngModel]="guestName()"
+            (ngModelChange)="guestName.set($event)"
+            class="name-input"
+            [disabled]="loading()"
+          />
+        </div>
+        <div class="button-group">
+          <button
+            class="btn btn-yes"
+            (click)="submitRSVP(true)"
+            [disabled]="!guestName().trim() || loading()"
+          >
+            @if (loading()) {
+              Sending...
+            } @else {
+              Yes, I'll be there! &#127881;
+            }
+          </button>
+          <button
+            class="btn btn-no"
+            (click)="submitRSVP(false)"
+            [disabled]="!guestName().trim() || loading()"
+          >
+            @if (loading()) {
+              Sending...
+            } @else {
+              Sorry, can't make it &#128546;
+            }
+          </button>
+        </div>
+      </div>
+    } @else {
+      <div class="thank-you">
+        @if (submitted()) {
+          <h2>&#127881; Thank you! &#127881;</h2>
+          <p>Your response has been recorded!</p>
+          <button class="btn btn-another" (click)="resetForm()">
+            Add another friend
+          </button>
+        }
+      </div>
+    }
+
+    <!-- Guest List - Attending -->
+    @if (attendingGuests.length > 0) {
+      <div class="guest-list attending">
+        <h3>&#127881; Friends coming: {{ attendingGuests.length }}</h3>
+        <div class="guests">
+          @for (guest of attendingGuests; track guest.id) {
+            <span class="guest-tag yes">{{ guest.name }}</span>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- Guest List - Not Attending -->
+    @if (notAttendingGuests.length > 0) {
+      <div class="guest-list not-attending">
+        <h3>&#128546; Can't make it: {{ notAttendingGuests.length }}</h3>
+        <div class="guests">
+          @for (guest of notAttendingGuests; track guest.id) {
+            <span class="guest-tag no">{{ guest.name }}</span>
+          }
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <p>See you there! &#127880;&#127874;&#127881;</p>
+  </div>
+</div>

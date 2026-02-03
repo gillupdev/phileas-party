@@ -1,0 +1,7 @@
+node_modules
+.angular
+.git
+.gitignore
+*.md
+server/public
+server/guests.json
