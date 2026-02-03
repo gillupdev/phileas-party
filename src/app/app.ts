@@ -27,6 +27,7 @@ export class App implements OnInit, OnDestroy {
   protected readonly submitted = signal(false);
   protected readonly loading = signal(false);
   protected readonly error = signal('');
+  protected lastSubmittedName = '';
 
   ngOnInit() {
     this.loadGuests();
@@ -61,6 +62,7 @@ export class App implements OnInit, OnDestroy {
 
     this.http.post<Guest>(this.apiUrl, { name, attending }).subscribe({
       next: () => {
+        this.lastSubmittedName = name;
         this.loadGuests();
         this.submitted.set(true);
         this.showForm.set(false);

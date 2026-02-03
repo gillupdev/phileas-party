@@ -1,26 +1,10 @@
 <div class="page">
-  <header>
-    <nav class="nav">
-      <span class="logo">P</span>
-    </nav>
-  </header>
-
-  <section class="hero">
-    <div class="hero-inner">
-      <p class="overline">23 Mars 2025</p>
-      <h1>Phileas</h1>
-      <p class="subtitle">célèbre ses 8 ans</p>
-      <div class="scroll-indicator">
-        <span></span>
-      </div>
-    </div>
-  </section>
-
-  <section class="invitation-section">
-    <div class="container">
-      <div class="section-header">
-        <p class="section-label">Invitation</p>
-        <h2>Tu es invité</h2>
+  <div class="container">
+    <div class="card">
+      <div class="header">
+        <span class="badge">23 Mars 2025</span>
+        <h1>Phileas</h1>
+        <p>fête ses 8 ans !</p>
       </div>
 
       @if (error()) {
@@ -30,57 +14,48 @@
       }
 
       @if (showForm()) {
-        <div class="form-wrapper">
-          <div class="form-group">
-            <label for="name">Ton prénom</label>
-            <input
-              id="name"
-              type="text"
-              [ngModel]="guestName()"
-              (ngModelChange)="guestName.set($event)"
-              [disabled]="loading()"
-            />
-          </div>
-          <div class="form-actions">
-            <button
-              class="btn btn-primary"
-              (click)="submitRSVP(true)"
-              [disabled]="!guestName().trim() || loading()"
-            >
-              {{ loading() ? 'Envoi...' : 'Je serai là' }}
-            </button>
-            <button
-              class="btn btn-ghost"
-              (click)="submitRSVP(false)"
-              [disabled]="!guestName().trim() || loading()"
-            >
-              {{ loading() ? 'Envoi...' : 'Je ne pourrai pas' }}
-            </button>
-          </div>
+        <div class="form-group">
+          <label for="name">Ton prénom</label>
+          <input
+            id="name"
+            type="text"
+            placeholder="Entre ton prénom..."
+            [ngModel]="guestName()"
+            (ngModelChange)="guestName.set($event)"
+            [disabled]="loading()"
+          />
+        </div>
+        <div class="btn-group">
+          <button
+            class="btn btn-primary"
+            (click)="submitRSVP(true)"
+            [disabled]="!guestName().trim() || loading()"
+          >
+            {{ loading() ? '...' : 'Je viens !' }}
+          </button>
+          <button
+            class="btn btn-secondary"
+            (click)="submitRSVP(false)"
+            [disabled]="!guestName().trim() || loading()"
+          >
+            {{ loading() ? '...' : 'Pas dispo' }}
+          </button>
         </div>
       } @else {
         <div class="confirmation">
-          <p class="confirmation-text">Merci pour ta réponse</p>
-          <button class="btn btn-link" (click)="resetForm()">
-            Ajouter un autre invité
+          <p>Merci {{ lastSubmittedName }} !</p>
+          <button class="btn-link" (click)="resetForm()">
+            Ajouter quelqu'un d'autre
           </button>
         </div>
       }
-    </div>
-  </section>
 
-  @if (attendingGuests.length > 0 || notAttendingGuests.length > 0) {
-    <section class="guests-section">
-      <div class="container">
-        <div class="section-header">
-          <p class="section-label">Réponses</p>
-          <h2>Les invités</h2>
-        </div>
-
-        <div class="guests-grid">
+      @if (attendingGuests.length > 0 || notAttendingGuests.length > 0) {
+        <div class="divider"></div>
+        <div class="guests">
           @if (attendingGuests.length > 0) {
-            <div class="guest-group">
-              <h3>Présents <span class="count">{{ attendingGuests.length }}</span></h3>
+            <div class="guest-col">
+              <h3>Présents <span>{{ attendingGuests.length }}</span></h3>
               <ul class="guest-list">
                 @for (guest of attendingGuests; track guest.id) {
                   <li>{{ guest.name }}</li>
@@ -88,10 +63,9 @@
               </ul>
             </div>
           }
-
           @if (notAttendingGuests.length > 0) {
-            <div class="guest-group absent">
-              <h3>Absents <span class="count">{{ notAttendingGuests.length }}</span></h3>
+            <div class="guest-col absent">
+              <h3>Absents <span>{{ notAttendingGuests.length }}</span></h3>
               <ul class="guest-list">
                 @for (guest of notAttendingGuests; track guest.id) {
                   <li>{{ guest.name }}</li>
@@ -100,13 +74,7 @@
             </div>
           }
         </div>
-      </div>
-    </section>
-  }
-
-  <footer>
-    <div class="container">
-      <p>On a hâte de te voir</p>
+      }
     </div>
-  </footer>
+  </div>
 </div>
