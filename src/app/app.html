@@ -1,113 +1,112 @@
 <div class="page">
-  <div class="hero">
-    <div class="hero-content">
-      <div class="badge">
-        <span class="age">8</span>
-        <span class="ans">ans</span>
-      </div>
-      <h1>PHILEAS</h1>
-      <div class="tagline">fête son anniversaire</div>
-      <div class="date-block">
-        <div class="date-icon">&#128197;</div>
-        <div class="date-info">
-          <span class="day">23</span>
-          <span class="month">MARS</span>
-        </div>
+  <header>
+    <nav class="nav">
+      <span class="logo">P</span>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="hero-inner">
+      <p class="overline">23 Mars 2025</p>
+      <h1>Phileas</h1>
+      <p class="subtitle">célèbre ses 8 ans</p>
+      <div class="scroll-indicator">
+        <span></span>
       </div>
     </div>
-  </div>
+  </section>
 
-  <div class="main-content">
-    <!-- Error Message -->
-    @if (error()) {
-      <div class="error-box">
-        <span>&#9888;</span> {{ error() }}
+  <section class="invitation-section">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-label">Invitation</p>
+        <h2>Tu es invité</h2>
       </div>
-    }
 
-    <!-- RSVP Form -->
-    @if (showForm()) {
-      <div class="rsvp-card">
-        <h2>Tu viens ?</h2>
-        <input
-          type="text"
-          placeholder="Entre ton prénom"
-          [ngModel]="guestName()"
-          (ngModelChange)="guestName.set($event)"
-          class="input-field"
-          [disabled]="loading()"
-        />
-        <div class="btn-row">
-          <button
-            class="btn btn-confirm"
-            (click)="submitRSVP(true)"
-            [disabled]="!guestName().trim() || loading()"
-          >
-            @if (loading()) {
-              <span class="loader"></span>
-            } @else {
-              OUI, JE SERAI LÀ !
-            }
-          </button>
-          <button
-            class="btn btn-decline"
-            (click)="submitRSVP(false)"
-            [disabled]="!guestName().trim() || loading()"
-          >
-            @if (loading()) {
-              <span class="loader"></span>
-            } @else {
-              NON, DÉSOLÉ
-            }
-          </button>
+      @if (error()) {
+        <div class="error-message">
+          {{ error() }}
         </div>
-      </div>
-    } @else {
-      <div class="thank-you-card">
-        @if (submitted()) {
-          <div class="check-icon">&#10003;</div>
-          <h2>Merci !</h2>
-          <p>Ta réponse a été enregistrée</p>
-          <button class="btn btn-secondary" (click)="resetForm()">
+      }
+
+      @if (showForm()) {
+        <div class="form-wrapper">
+          <div class="form-group">
+            <label for="name">Ton prénom</label>
+            <input
+              id="name"
+              type="text"
+              [ngModel]="guestName()"
+              (ngModelChange)="guestName.set($event)"
+              [disabled]="loading()"
+            />
+          </div>
+          <div class="form-actions">
+            <button
+              class="btn btn-primary"
+              (click)="submitRSVP(true)"
+              [disabled]="!guestName().trim() || loading()"
+            >
+              {{ loading() ? 'Envoi...' : 'Je serai là' }}
+            </button>
+            <button
+              class="btn btn-ghost"
+              (click)="submitRSVP(false)"
+              [disabled]="!guestName().trim() || loading()"
+            >
+              {{ loading() ? 'Envoi...' : 'Je ne pourrai pas' }}
+            </button>
+          </div>
+        </div>
+      } @else {
+        <div class="confirmation">
+          <p class="confirmation-text">Merci pour ta réponse</p>
+          <button class="btn btn-link" (click)="resetForm()">
             Ajouter un autre invité
           </button>
-        }
-      </div>
-    }
-
-    <!-- Guest Lists -->
-    <div class="guests-section">
-      @if (attendingGuests.length > 0) {
-        <div class="guest-card coming">
-          <div class="guest-header">
-            <span class="guest-count">{{ attendingGuests.length }}</span>
-            <span class="guest-label">{{ attendingGuests.length === 1 ? 'invité confirmé' : 'invités confirmés' }}</span>
-          </div>
-          <div class="guest-list">
-            @for (guest of attendingGuests; track guest.id) {
-              <span class="guest-chip">{{ guest.name }}</span>
-            }
-          </div>
-        </div>
-      }
-
-      @if (notAttendingGuests.length > 0) {
-        <div class="guest-card not-coming">
-          <div class="guest-header">
-            <span class="guest-count">{{ notAttendingGuests.length }}</span>
-            <span class="guest-label">{{ notAttendingGuests.length === 1 ? 'ne peut pas venir' : 'ne peuvent pas venir' }}</span>
-          </div>
-          <div class="guest-list">
-            @for (guest of notAttendingGuests; track guest.id) {
-              <span class="guest-chip">{{ guest.name }}</span>
-            }
-          </div>
         </div>
       }
     </div>
-  </div>
+  </section>
+
+  @if (attendingGuests.length > 0 || notAttendingGuests.length > 0) {
+    <section class="guests-section">
+      <div class="container">
+        <div class="section-header">
+          <p class="section-label">Réponses</p>
+          <h2>Les invités</h2>
+        </div>
+
+        <div class="guests-grid">
+          @if (attendingGuests.length > 0) {
+            <div class="guest-group">
+              <h3>Présents <span class="count">{{ attendingGuests.length }}</span></h3>
+              <ul class="guest-list">
+                @for (guest of attendingGuests; track guest.id) {
+                  <li>{{ guest.name }}</li>
+                }
+              </ul>
+            </div>
+          }
+
+          @if (notAttendingGuests.length > 0) {
+            <div class="guest-group absent">
+              <h3>Absents <span class="count">{{ notAttendingGuests.length }}</span></h3>
+              <ul class="guest-list">
+                @for (guest of notAttendingGuests; track guest.id) {
+                  <li>{{ guest.name }}</li>
+                }
+              </ul>
+            </div>
+          }
+        </div>
+      </div>
+    </section>
+  }
 
   <footer>
-    <p>On t'attend avec impatience !</p>
+    <div class="container">
+      <p>On a hâte de te voir</p>
+    </div>
   </footer>
 </div>
