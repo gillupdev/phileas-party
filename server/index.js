@@ -33,7 +33,8 @@ app.use(cors());
 app.use(express.json());
 
 // Serve Angular static files in production
-app.use(express.static(path.join(__dirname, 'public', 'browser')));
+const staticPath = path.join(__dirname, 'public', 'browser');
+app.use(express.static(staticPath));
 
 // GET all guests
 app.get('/api/guests', (req, res) => {
@@ -81,9 +82,9 @@ app.delete('/api/guests/:id', (req, res) => {
   }
 });
 
-// Serve Angular app for all other routes (SPA support)
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'browser', 'index.html'));
+// Serve Angular app for all other routes (SPA support) - using middleware
+app.use((req, res) => {
+  res.sendFile(path.join(staticPath, 'index.html'));
 });
 
 // Start server
