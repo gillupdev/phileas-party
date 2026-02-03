@@ -17,7 +17,7 @@ yarn-error.log
 server/guests.json
 
 # Build output
-/server/public
+# /server/public
 
 # IDEs and editors
 .idea/
