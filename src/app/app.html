@@ -16,7 +16,7 @@
     <div class="header">
       <div class="age-badge">8</div>
       <h1 class="title">Phileas</h1>
-      <p class="subtitle">Birthday Party!</p>
+      <p class="subtitle">Anniversaire !</p>
     </div>
 
     <!-- Party Info -->
@@ -24,15 +24,15 @@
       <div class="info-item">
         <span class="info-icon">&#128197;</span>
         <div class="info-text">
-          <strong>March 23rd</strong>
-          <span>Save the date!</span>
+          <strong>23 Mars</strong>
+          <span>Notez la date !</span>
         </div>
       </div>
       <div class="info-item">
         <span class="info-icon">&#127874;</span>
         <div class="info-text">
-          <strong>Let's celebrate!</strong>
-          <span>Fun & Games</span>
+          <strong>On fait la fete !</strong>
+          <span>Jeux & Surprises</span>
         </div>
       </div>
     </div>
@@ -47,11 +47,11 @@
     <!-- RSVP Form -->
     @if (showForm()) {
       <div class="rsvp-section">
-        <h2>Can you come?</h2>
+        <h2>Tu peux venir ?</h2>
         <div class="form-group">
           <input
             type="text"
-            placeholder="Your name"
+            placeholder="Ton prenom"
             [ngModel]="guestName()"
             (ngModelChange)="guestName.set($event)"
             class="name-input"
@@ -65,9 +65,9 @@
             [disabled]="!guestName().trim() || loading()"
           >
             @if (loading()) {
-              Sending...
+              Envoi...
             } @else {
-              Yes, I'll be there! &#127881;
+              Oui, je viens ! &#127881;
             }
           </button>
           <button
@@ -76,9 +76,9 @@
             [disabled]="!guestName().trim() || loading()"
           >
             @if (loading()) {
-              Sending...
+              Envoi...
             } @else {
-              Sorry, can't make it &#128546;
+              Non, je ne peux pas &#128546;
             }
           </button>
         </div>
@@ -86,10 +86,10 @@
     } @else {
       <div class="thank-you">
         @if (submitted()) {
-          <h2>&#127881; Thank you! &#127881;</h2>
-          <p>Your response has been recorded!</p>
+          <h2>&#127881; Merci ! &#127881;</h2>
+          <p>Ta reponse a ete enregistree !</p>
           <button class="btn btn-another" (click)="resetForm()">
-            Add another friend
+            Ajouter un autre ami
           </button>
         }
       </div>
@@ -98,7 +98,7 @@
     <!-- Guest List - Attending -->
     @if (attendingGuests.length > 0) {
       <div class="guest-list attending">
-        <h3>&#127881; Friends coming: {{ attendingGuests.length }}</h3>
+        <h3>&#127881; Amis qui viennent : {{ attendingGuests.length }}</h3>
         <div class="guests">
           @for (guest of attendingGuests; track guest.id) {
             <span class="guest-tag yes">{{ guest.name }}</span>
@@ -110,7 +110,7 @@
     <!-- Guest List - Not Attending -->
     @if (notAttendingGuests.length > 0) {
       <div class="guest-list not-attending">
-        <h3>&#128546; Can't make it: {{ notAttendingGuests.length }}</h3>
+        <h3>&#128546; Ne peuvent pas venir : {{ notAttendingGuests.length }}</h3>
         <div class="guests">
           @for (guest of notAttendingGuests; track guest.id) {
             <span class="guest-tag no">{{ guest.name }}</span>
@@ -122,6 +122,6 @@
 
   <!-- Footer -->
   <div class="footer">
-    <p>See you there! &#127880;&#127874;&#127881;</p>
+    <p>A bientot ! &#127880;&#127874;&#127881;</p>
   </div>
 </div>
