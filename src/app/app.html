@@ -1,22 +1,25 @@
 <div class="page">
   <div class="container">
     <div class="card">
-      <div class="user-bar">
+      <div class="top-bar">
+        <button class="btn-lang" (click)="toggleLanguage()">
+          {{ lang() === 'fr' ? 'EN' : 'FR' }}
+        </button>
         @if (user(); as currentUser) {
           <div class="user-info">
             @if (currentUser.picture) {
-              <img [src]="currentUser.picture" alt="Photo de profil" class="user-avatar" referrerpolicy="no-referrer" />
+              <img [src]="currentUser.picture" [alt]="t().profileAlt" class="user-avatar" referrerpolicy="no-referrer" />
             }
             <span class="user-name">{{ currentUser.name }}</span>
           </div>
-          <button class="btn-logout" (click)="logout()">Deconnexion</button>
+          <button class="btn-logout" (click)="logout()">{{ t().logout }}</button>
         }
       </div>
 
       <div class="header">
-        <span class="badge">23 Mars 2025</span>
-        <h1>Phileas</h1>
-        <p>fete ses 8 ans !</p>
+        <span class="badge">{{ t().date }}</span>
+        <h1>{{ t().title }}</h1>
+        <p>{{ t().subtitle }}</p>
       </div>
 
       @if (error()) {
@@ -27,7 +30,7 @@
 
       @if (showForm()) {
         <div class="form-group">
-          <label>Tu reponds en tant que</label>
+          <label>{{ t().respondAs }}</label>
           <div class="user-display">{{ userName() }}</div>
         </div>
         <div class="btn-group">
@@ -36,21 +39,21 @@
             (click)="submitRSVP(true)"
             [disabled]="loading()"
           >
-            {{ loading() ? '...' : 'Je viens !' }}
+            {{ loading() ? '...' : t().attending }}
           </button>
           <button
             class="btn btn-secondary"
             (click)="submitRSVP(false)"
             [disabled]="loading()"
           >
-            {{ loading() ? '...' : 'Pas dispo' }}
+            {{ loading() ? '...' : t().notAvailable }}
           </button>
         </div>
       } @else {
         <div class="confirmation">
-          <p>Merci {{ userName() }} !</p>
+          <p>{{ t().thanks }} {{ userName() }} !</p>
           <button class="btn-link" (click)="resetForm()">
-            Modifier ma reponse
+            {{ t().changeResponse }}
           </button>
         </div>
       }
@@ -60,7 +63,7 @@
         <div class="guests">
           @if (attendingGuests.length > 0) {
             <div class="guest-col">
-              <h3>Presents <span>{{ attendingGuests.length }}</span></h3>
+              <h3>{{ t().present }} <span>{{ attendingGuests.length }}</span></h3>
               <ul class="guest-list">
                 @for (guest of attendingGuests; track guest.id) {
                   <li>{{ guest.name }}</li>
@@ -70,7 +73,7 @@
           }
           @if (notAttendingGuests.length > 0) {
             <div class="guest-col absent">
-              <h3>Absents <span>{{ notAttendingGuests.length }}</span></h3>
+              <h3>{{ t().absent }} <span>{{ notAttendingGuests.length }}</span></h3>
               <ul class="guest-list">
                 @for (guest of notAttendingGuests; track guest.id) {
                   <li>{{ guest.name }}</li>

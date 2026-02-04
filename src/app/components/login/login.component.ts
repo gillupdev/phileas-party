@@ -1,5 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
+import { I18nService } from '../../services/i18n.service';
 
 @Component({
   selector: 'app-login',
@@ -8,14 +9,20 @@ import { AuthService } from '../../services/auth.service';
     <div class="page">
       <div class="container">
         <div class="card">
+          <div class="top-bar">
+            <button class="btn-lang" (click)="toggleLanguage()">
+              {{ lang() === 'fr' ? 'EN' : 'FR' }}
+            </button>
+          </div>
+
           <div class="header">
-            <span class="badge">23 Mars 2025</span>
-            <h1>Phileas</h1>
-            <p>fete ses 8 ans !</p>
+            <span class="badge">{{ t().date }}</span>
+            <h1>{{ t().title }}</h1>
+            <p>{{ t().subtitle }}</p>
           </div>
 
           <div class="login-section">
-            <p class="login-message">Connecte-toi pour repondre a l'invitation</p>
+            <p class="login-message">{{ t().loginMessage }}</p>
             <button class="btn btn-google" (click)="login()">
               <svg class="google-icon" viewBox="0 0 24 24" width="20" height="20">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -23,7 +30,7 @@ import { AuthService } from '../../services/auth.service';
                 <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
                 <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
               </svg>
-              Se connecter avec Google
+              {{ t().loginGoogle }}
             </button>
           </div>
         </div>
@@ -31,6 +38,31 @@ import { AuthService } from '../../services/auth.service';
     </div>
   `,
   styles: [`
+    .top-bar {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #E8E8F0;
+    }
+
+    .btn-lang {
+      background: none;
+      border: 1px solid #E8E8F0;
+      color: #64648c;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-lang:hover {
+      border-color: #6C5CE7;
+      color: #6C5CE7;
+    }
+
     .login-section {
       text-align: center;
       padding: 2rem 0;
@@ -69,8 +101,16 @@ import { AuthService } from '../../services/auth.service';
 })
 export class LoginComponent {
   private authService = inject(AuthService);
+  private i18n = inject(I18nService);
+
+  readonly t = this.i18n.t;
+  readonly lang = this.i18n.language;
 
   login() {
     this.authService.login();
+  }
+
+  toggleLanguage() {
+    this.i18n.toggleLanguage();
   }
 }

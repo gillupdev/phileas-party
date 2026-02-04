@@ -1,6 +1,7 @@
 import { Component, signal, OnInit, OnDestroy, inject, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from './services/auth.service';
+import { I18nService } from './services/i18n.service';
 
 interface Guest {
   id: number;
@@ -20,6 +21,10 @@ export class App implements OnInit, OnDestroy {
   private apiUrl = '/api/guests';
   private pollInterval: any;
 
+  protected readonly i18n = inject(I18nService);
+  protected readonly t = this.i18n.t;
+  protected readonly lang = this.i18n.language;
+
   protected readonly guests = signal<Guest[]>([]);
   protected readonly showForm = signal(true);
   protected readonly submitted = signal(false);
@@ -28,6 +33,10 @@ export class App implements OnInit, OnDestroy {
 
   readonly user = this.authService.user;
   readonly userName = computed(() => this.user()?.name || '');
+
+  toggleLanguage() {
+    this.i18n.toggleLanguage();
+  }
 
   ngOnInit() {
     this.loadGuests();
@@ -48,9 +57,9 @@ export class App implements OnInit, OnDestroy {
       },
       error: (err) => {
         if (err.status === 401) {
-          this.error.set('Session expired. Please refresh the page.');
+          this.error.set(this.t().sessionExpired);
         } else {
-          this.error.set('Could not connect to server. Make sure the server is running!');
+          this.error.set(this.t().serverError);
         }
         console.error('Failed to load guests:', err);
       }
@@ -71,7 +80,7 @@ export class App implements OnInit, OnDestroy {
         this.loading.set(false);
       },
       error: (err) => {
-        this.error.set('Failed to submit. Please try again!');
+        this.error.set(this.t().submitError);
         this.loading.set(false);
         console.error('Failed to submit RSVP:', err);
       }
