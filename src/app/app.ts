@@ -1,7 +1,6 @@
-import { Component, signal, OnInit, OnDestroy } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, signal, OnInit, OnDestroy, inject, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { inject } from '@angular/core';
+import { AuthService } from './services/auth.service';
 
 interface Guest {
   id: number;
@@ -11,27 +10,27 @@ interface Guest {
 }
 
 @Component({
-  selector: 'app-root',
-  imports: [FormsModule],
+  selector: 'app-rsvp',
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
 export class App implements OnInit, OnDestroy {
   private http = inject(HttpClient);
+  private authService = inject(AuthService);
   private apiUrl = '/api/guests';
   private pollInterval: any;
 
   protected readonly guests = signal<Guest[]>([]);
-  protected readonly guestName = signal('');
   protected readonly showForm = signal(true);
   protected readonly submitted = signal(false);
   protected readonly loading = signal(false);
   protected readonly error = signal('');
-  protected lastSubmittedName = '';
+
+  readonly user = this.authService.user;
+  readonly userName = computed(() => this.user()?.name || '');
 
   ngOnInit() {
     this.loadGuests();
-    // Poll for updates every 5 seconds so everyone sees new RSVPs
     this.pollInterval = setInterval(() => this.loadGuests(), 5000);
   }
 
@@ -42,27 +41,30 @@ export class App implements OnInit, OnDestroy {
   }
 
   loadGuests() {
-    this.http.get<Guest[]>(this.apiUrl).subscribe({
+    this.http.get<Guest[]>(this.apiUrl, { withCredentials: true }).subscribe({
       next: (guests) => {
         this.guests.set(guests);
         this.error.set('');
       },
       error: (err) => {
-        this.error.set('Could not connect to server. Make sure the server is running!');
+        if (err.status === 401) {
+          this.error.set('Session expired. Please refresh the page.');
+        } else {
+          this.error.set('Could not connect to server. Make sure the server is running!');
+        }
         console.error('Failed to load guests:', err);
       }
     });
   }
 
   submitRSVP(attending: boolean) {
-    const name = this.guestName().trim();
+    const name = this.userName();
     if (!name) return;
 
     this.loading.set(true);
 
-    this.http.post<Guest>(this.apiUrl, { name, attending }).subscribe({
+    this.http.post<Guest>(this.apiUrl, { name, attending }, { withCredentials: true }).subscribe({
       next: () => {
-        this.lastSubmittedName = name;
         this.loadGuests();
         this.submitted.set(true);
         this.showForm.set(false);
@@ -77,9 +79,14 @@ export class App implements OnInit, OnDestroy {
   }
 
   resetForm() {
-    this.guestName.set('');
     this.submitted.set(false);
     this.showForm.set(true);
+  }
+
+  logout() {
+    this.authService.logout().subscribe(() => {
+      window.location.href = '/login';
+    });
   }
 
   get attendingGuests() {

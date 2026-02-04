@@ -15,6 +15,11 @@ yarn-error.log
 # Database
 *.db
 server/guests.json
+server/users.json
+
+# Environment variables
+.env
+server/.env
 
 # Build output
 # /server/public
